@@ -1,0 +1,6 @@
+nodes = ["rumah","matos","sma","transmart","um"]
+weighted_edges = [
+    ("rumah", "matos", 0.55), ("rumah", "sma", 0.65),
+    ("matos", "transmart", 0.4), ("matos", "um", 0.95),
+    ("sma", "um", 0.7), 
+]

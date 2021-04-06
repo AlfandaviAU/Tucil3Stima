@@ -1,0 +1,7 @@
+nodes = ["MasjidSalman","Baltos","RSSantoBorromeus","TerasCikapundung","AmarisCihampelas"]
+weighted_edges = [
+    ("MasjidSalman", "Baltos", 0.95), ("MasjidSalman", "RSSantoBorromeus", 0.19),
+    ("AmarisCihampelas", "Baltos", 1.6),
+    ("TerasCikapundung", "Baltos", 2.4), ("TerasCikapundung", "RSSantoBorromeus", 1.7), 
+    ("RSSantoBorromeus", "Baltos", 1.0),
+]

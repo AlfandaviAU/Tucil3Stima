@@ -1,0 +1,6 @@
+nodes = ["rsiaHarapanBunda","pasarCiwastra","bormaMargacinta","sma21","kampoengTulip"]
+weighted_edges = [
+    ("rsiaHarapanBunda", "pasarCiwastra", 1), ("rsiaHarapanBunda", "bormaMargacinta", 1.6), ("rsiaHarapanBunda", "kampoengTulip", 1),
+    ("pasarCiwastra", "bormaMargacinta", 1.8), ("pasarCiwastra", "sma21", 1.1), ("pasarCiwastra", "kampoengTulip", 0.8),
+    ("bormaMargacinta", "kampoengTulip", 1.7), 
+]

@@ -1,0 +1,6 @@
+nodes = ["MasjidAgungBandung","IstanaMainan","MenaraBRIBandung","RiaBusana","MuseumAsiaAfrika"]
+weighted_edges = [
+    ("MasjidAgungBandung", "IstanaMainan", 0.45), ("MasjidAgungBandung", "RiaBusana", 0.22), ("MasjidAgungBandung", "MenaraBRIBandung", 0.19),
+    ("MuseumAsiaAfrika", "MenaraBRIBandung", 0.26),
+    ("RiaBusana", "IstanaMainan", 0.55),
+]
