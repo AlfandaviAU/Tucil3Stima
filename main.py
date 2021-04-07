@@ -1,158 +1,211 @@
 import networkx as nx
 import matplotlib.pyplot as plt
+from math import radians, cos, sin, asin, sqrt
+import os
+os.system('cls')
 
 
+place = []
+koordinat = []
+active = []
+asu = []
+heu = []
+cost = []
+possibilities = []
 
-#Membaca file kemudian memasukkanya ke Array
-def bacaFile (files):
-    with open(files) as f:
+def conv(x):
+    res = {}
+    for i in range(len(x)):
+        val = {}
+        for j in range(len(x)):
+            if (float(x[i][j]) != 0):
+                val_key = j
+                val_value = float(x[i][j])
+                val[val_key] = val_value
+        key = i
+        res[key] = val
+    
+    return res
+
+def getListKey(a, graph): # ambil key
+    return list(graph[a].keys())
+
+def readLoc(file):
+    with open(file) as f:
         content = f.readlines()
-    nice = []
+    for i in content:
+        x = i.replace('\n','')
+        y = x.split('	')
+        z = y[1].split(', ')
+        place.append(y[0])
+        koordinat.append(z)
+    
+    for i in koordinat:
+        for j in range(len(i)):
+            temp = float(i[j])
+            i[j] = temp
+
+def readCon(file):
+    with open(file) as f:
+        content = f.readlines()
+    res = []
     for i in content:
         x = i.replace('\n','')
         y = x.split(' ')
-        nice.append(y)
-    return nice
+        res.append(y)
+    pathhasilnyaderBerjarak(res)
+    return res
 
-x = bacaFile("tes1.txt")
+def pathhasilnyaderBerjarak(arr):
+    for i in range(len(arr)):
+        for j in range(len(arr[i])):
+            if (arr[i][j] == '1'):
+                arr[i][j] = harvesine(koordinat[i],koordinat[j])
+            else :
+                arr[i][j] = 0
 
-#Mengubah Array menjadi Dictionary
-def convert(x):
-    graf = {}
-    for row in range(len(x)):
-        val = {}
-        for col in range(len(x)):
-            if (int(x[row][col]) != 0):
-                val_key = col
-                val_value = int(x[row][col])
-                val[val_key] = val_value
-        key = row
-        graf[key] = val
-    
-    return graf
+def uiBiasalah():
+    print("Index       Places                          Coordinates")
+    for i in range(len(place)):
+        num1 = len("Kode        ")
+        num2 = len("place                          ")
+        print(i," "*(num1 - len(str(i)) - 1),end="")
+        print(place[i]," "*(num2 - (len(place[i])) - 1),end="")
+        print(koordinat[i][0]," , ",koordinat[i][1])
 
-cost = []
-active = []
-possibilities = []
-p = []
-z = convert(x)
+def harvesine(point1, point2):
+    temp1 = radians(point2[1]) - radians(point1[1]) 
+    temp2 = radians(point2[0]) - radians(point1[0])
+    temp3 = sin(temp2 / 2)**2 + cos(radians(point1[0])) * cos(radians(point2[0])) * sin(temp1 / 2)**2
+    temp4 = 2 * asin(sqrt(temp3)) 
+    return(temp4 * 6371000) # jari-jari bumi
 
-def minArray(array) :
-    temp = array[0]
-    indeks = 0
-    for i in range(len(array)):
-        if (array[i] < temp):
-            temp = array[i]
-            indeks = i 
-
-    return indeks
+def heuristicgen(dest):
+    for i in koordinat:
+        heu.append(harvesine(koordinat[dest],i))
 
 
-def pathfinder(x,arr):
+
+
+def minimum(array) :
+    minimal = array[0]
+    idx = 0
+    for i in range(1,len(array)):
+        if (array[i] < minimal):
+            minimal = array[i]
+            idx = i 
+    return idx
+
+
+def getPath(x,arr):
     if (len(arr) == 1):
         return list(arr)
     else :
         for i in range(len(arr)):
             if (arr[i][len(arr[i]) - 1] == x):
                 temp = list(arr[i])
-        print(temp)
         return temp
 
-
-def getActive_Cost(a,graf):
-    temp = dict(graf[a])
-    for i in (graf[a].keys()):
+def getActive_Cost(a,graph):
+    temp = dict(graph[a])
+    for i in (graph[a].keys()):
         active.append(i)
-        cost.append(temp[i])
-    print("aktif dan cost",active,cost)
+        x = temp[i] + heu[i]
+        cost.append(x)
 
-def getKey(a,graf):
-    return list(graf[a].keys())
 
-def initPath(list_key,arr):
+
+def cariPath(list_key,arr):
     temp = []
     for i in range(len(list_key)):
         temp.append(list(arr))
         temp[i].append(list_key[i])
-    print("Possible Path",temp)
     return temp
 
-
-
-def delX(x):
-    if (len(p) == 1):
-        p.pop(0)
+def remove(x):
+    if (len(asu) == 1):
+        asu.pop(0)
     else :
-        for i in range(len(p)):
-            if (p[i] == x):
-                p.pop(i)
-
+        for i in range(len(asu)):
+            if (asu[i] == x):
+                asu.pop(i)
 
 def generate(x):
-    getActive_Cost(x,z)
-    key = getKey(x,z)
-    path = pathfinder(x,p)
-    temp = initPath(key,path)
-    delX(path)
+    getActive_Cost(x,bobot)
+    key = getListKey(x,bobot)
+    path = getPath(x,asu)
+    temp = cariPath(key,path)
+    remove(path)
     for i in temp:
-        p.append(i)
-    print(p)
+        asu.append(i)
 
-def constructing():
-    indeks = minArray(cost)
-    new_active = active[indeks]
-    active.pop(indeks)
-    cost.pop(indeks)
+def construct():
+    idx = minimum(cost)
+    new_active = active[idx]
+    active.pop(idx)
+    cost.pop(idx)
     return new_active
 
-def FindCost(arr):
+def estimasiJarak(arr):
     sum = 0
     for i in range(len(arr)-1):
-        temp = z[arr[i]]
-        price = temp[arr[i+1]]
-        sum+= price
-    print("Biaya Perjalanan =",sum) 
+        temp = bobot[arr[i]]
+        dist = temp[arr[i+1]]
+        sum += dist
+    print("Jarak yang ditempuh : ",sum," meter") 
 
-def search(start,end):
+def Astar(start,end):
     i = 0
-    p.append(start)
+    heuristicgen(end)
+    asu.append(start)
     while(True):
         generate(start)
-        start = constructing()
+        start = construct()
         if (start == end):
-            fin = pathfinder(end,p)
-            print("Jalur yang ditemukan =",fin)
-            FindCost(fin)
+            hasilnya = getPath(end,asu)
+            print("Rute yang akan ditempuh : ")
+            for i in range (len(hasilnya)):
+                if (i != 0):
+                    print(" -> " + str(hasilnya[i]),end="")
+                else:
+                    print(hasilnya[i],end="")
+            print("\n")
+            estimasiJarak(hasilnya)
             break
-       
 
-search(0,3)
+# Visualisasi
+def drawFromTxt(arr):
+    nodes = []
+    weighted_edge = []
+    for i in range(len(arr)):
+        nodes.append(i)
+        for j in range(len(arr[i])):
+            if i != j:
+                weighted_edge.append((i, j, int(arr[i][j])))
 
-G = nx.Graph()
-nodes = ["rumah","matos","sma","transmart","um"]
-weighted_edges = [
-    ("rumah", "matos", 0.55), ("rumah", "sma", 0.65),
-    ("matos", "transmart", 0.4), ("matos", "um", 0.95),
-    ("sma", "um", 0.7), 
-]
+    graph = nx.Graph()
+    graph.add_nodes_from(nodes)
+    graph.add_weighted_edges_from(weighted_edge)
+
+    options = {
+        'nodes_color': 'blue',
+        'nodes_size': 300,
+        'width': 1,
+    }
+    nx.draw(graph, with_labels=True, font_weight='normal', **options)
+    plt.uiBiasalah()
 
 
-G.add_nodes_from(nodes)
-G.add_weighted_edges_from(weighted_edges)
+print("GOOGLE MAPS FAKE \n")
+print("HERE'S UR DATA \n ")
+print("======================= DATABASE =====================================================")
+readLoc("testCase/loc1.txt")
+x1 = readCon("testCase/con1.txt")
+bobot = conv(x1)
+uiBiasalah()
+print("======================================================================================")
+init = int(input("MULAI DARI : "))
+dest = int(input("BERHENTI DI : "))
 
-options = {
-    'node_color': 'orange',
-    'node_size': 300,
-    'width': 1,
-}
-
-print(list(G.nodes))
-print(list(G.edges))
-for n, nbrs in G.adj.items():
-    for nbr, eattr in nbrs.items():
-        wt = eattr['weight']
-        if wt > 0: print(f"({n}, {nbr}, {wt})")
-
-nx.draw(G, with_labels=True, font_weight='normal', **options)
-plt.show()
-
+# Proses Utamanya
+Astar(init,dest) # panggil fungsinya
