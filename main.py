@@ -195,12 +195,37 @@ def drawFromTxt(arr):
     nx.draw(graph, with_labels=True, font_weight='normal', **options)
     plt.uiBiasalah()
 
-
+readlocf = ""
+readconf = ""
 print("GOOGLE MAPS FAKE \n")
+print("Choose Test Case")
+print("1")
+print("2")
+print("3")
+print("4")
+x = '0'
+while(x < '1' or x > '4'):
+    x = input()
+    if(x == '1'):
+        readlocf = "testCase/loc1.txt"
+        readconf = "testCase/con1.txt"
+        
+    if(x == '2'):
+        readlocf = "testCase/loc2.txt"
+        readconf = "testCase/con2.txt"
+        
+    if(x == '3'):
+        readlocf = "testCase/loc3.txt"
+        readconf = "testCase/con3.txt"
+
+    if(x == '4'):
+        readlocf = "testCase/loc4.txt"
+        readconf = "testCase/con4.txt"
+        
 print("HERE'S UR DATA \n ")
 print("======================= DATABASE =====================================================")
-readLoc("testCase/loc1.txt")
-x1 = readCon("testCase/con1.txt")
+readLoc(readlocf)
+x1 = readCon(readconf)
 bobot = conv(x1)
 uiBiasalah()
 print("======================================================================================")
