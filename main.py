@@ -1,4 +1,3 @@
-import networkx as nx
 import matplotlib.pyplot as plt
 from math import radians, cos, sin, asin, sqrt
 import os
@@ -172,28 +171,6 @@ def Astar(start,end):
             print("\n")
             estimasiJarak(hasilnya)
             break
-
-# Visualisasi
-def drawFromTxt(arr):
-    nodes = []
-    weighted_edge = []
-    for i in range(len(arr)):
-        nodes.append(i)
-        for j in range(len(arr[i])):
-            if i != j:
-                weighted_edge.append((i, j, int(arr[i][j])))
-
-    graph = nx.Graph()
-    graph.add_nodes_from(nodes)
-    graph.add_weighted_edges_from(weighted_edge)
-
-    options = {
-        'nodes_color': 'blue',
-        'nodes_size': 300,
-        'width': 1,
-    }
-    nx.draw(graph, with_labels=True, font_weight='normal', **options)
-    plt.uiBiasalah()
 
 readlocf = ""
 readconf = ""
